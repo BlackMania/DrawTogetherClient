@@ -1,14 +1,13 @@
 <template>
     <div>
-        Dashboard is here
+        Play a game
     </div>
 </template>
 
 <script>
     export default {
-        name: "Dashboard"
+        name: "GameLobby"
     }
-
 </script>
 
 <style scoped>

@@ -64,18 +64,6 @@
 </template>
 
 <style scoped>
-  >>>.v-input__slot .v-text-field__slot input {
-    color:white;
-  }
-
-  >>>.v-input__slot .v-text-field__slot label {
-    color:white;
-  }
-
-  >>>.v-input__icon i {
-    color:white;
-  }
-
   >>>.v-card__text, .v-card__title {
     padding: 30px !important;
   }
@@ -125,7 +113,7 @@ export default {
           const myJson = await response.json();
           this.$session.start();
           this.$session.set('jwttoken', myJson['token']);
-          this.$router.push('/dashboard');
+          this.$router.push('/main');
         }
         else
         {
@@ -142,6 +130,13 @@ export default {
   computed:{
     theme(){
       return (this.$vuetify.theme.light) ? 'dark' : 'light'
+    }
+  },
+  created()
+  {
+    if(this.$session.exists())
+    {
+      this.$router.push('/main');
     }
   }
 }

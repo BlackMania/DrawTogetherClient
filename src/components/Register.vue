@@ -65,18 +65,6 @@
 </template>
 
 <style scoped>
-    >>>.v-input__slot .v-text-field__slot input {
-        color:white;
-    }
-
-    >>>.v-input__slot .v-text-field__slot label {
-        color:white;
-    }
-
-    >>>.v-input__icon i {
-        color:white;
-    }
-
     >>>.v-card__text, .v-card__title {
         padding: 30px !important;
     }
