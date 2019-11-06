@@ -113,7 +113,7 @@ export default {
           const myJson = await response.json();
           this.$session.start();
           this.$session.set('jwttoken', myJson['token']);
-          this.$router.push('/main');
+          await this.$router.push('/main');
         }
         else
         {

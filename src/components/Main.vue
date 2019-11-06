@@ -1,7 +1,7 @@
 <template>
     <div>
         <Menu class="left-float"/>
-        <router-view class="left-float"></router-view>
+        <router-view :key="this.$route.fullPath" class="left-float"></router-view>
     </div>
 </template>
 

@@ -9,7 +9,10 @@
     export default {
         name: 'App',
 
-        data: () => ({}),
+        data () {
+            return {
+            }
+        },
         created() {
             // ToDo
             // Fix when refreshing in main/play that it route to main/dashboard but to main/play instead
