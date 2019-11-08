@@ -1,24 +1,17 @@
 <template>
     <v-container>
-        <v-overlay
-            :value="overlay"
-        >
-            <v-card tile color="secondbackground">
-                <v-card-actions>
-                    <v-card-title><v-btn color="primary" @click="joinMessage" width="20vh">Join Game</v-btn></v-card-title>
-                </v-card-actions>
-                <v-card-actions>
-                    <v-card-title><v-btn color="primary" @click="sendMessage" width="20vh">Create Game</v-btn></v-card-title>
-                </v-card-actions>
-            </v-card>
-        </v-overlay>
 
-        <div id="testWebsocket">
-        </div>
-    </v-container>
+        <v-btn>Join game</v-btn>
+        <v-btn>Create game</v-btn>
+        <!-- Players are loaded in here -->
+            <v-row id="container">
+            </v-row>
+        </v-container>
 </template>
 
 <script>
+import Vue from 'vue'
+import LobbyPlayer from "./LobbyPlayer";
 
     export default {
         name: "Lobby",
@@ -32,7 +25,6 @@
                 this.overlay = !this.overlay;
             },
             joinMessage: function() {
-                this.websocket.send(`{"gameSessionId":"3434200c-7f2b-41a8-a3c6-9870755dc309","task":"JoinGame", "nickname": "Albert"}`);
                 this.overlay = !this.overlay;
             }
         },
@@ -40,6 +32,7 @@
             this.websocket = new WebSocket("ws://localhost:8090/ws/lobby/" + this.$session.get('jwttoken'));
             this.websocket.onmessage = function(message)
             {
+                if(message.data === "You successfully connected") return;
                 let json = JSON.parse(message.data);
                 let task = json['task'];
                 switch(task)
@@ -54,16 +47,28 @@
                     case 'addPlayers':
                         for(let i = 0; i < json['players'].length; i++)
                         {
-                            document.getElementById('testWebsocket').innerHTML += json['players'][i];
+                            // eslint-disable-next-line no-case-declarations
+                            let ComponentClass = Vue.extend(LobbyPlayer);
+                            let instance = new ComponentClass({
+                                propsData: { playerName: json['players'][i] }
+                            });
+                            instance.$mount();
+                            document.getElementById('container').append(instance.$el);
                         }
                         break;
                     case 'addNewPlayer':
                         // eslint-disable-next-line no-case-declarations
-                        let html = `<v-card id="${json['newPlayer']}"><v-card-actions><v-card-title>${json['newPlayer']}</v-card-title></v-card-actions></v-card>`;
-                        document.getElementById('testWebsocket').innerHTML += html;
+                        let ComponentClass = Vue.extend(LobbyPlayer);
+                        // eslint-disable-next-line no-case-declarations
+                        let instance = new ComponentClass({
+                            propsData: { playerName: json['newPlayer'] }
+                        });
+                        instance.$mount();
+                        document.getElementById('container').append(instance.$el);
                         break;
                     case 'removePlayer':
                         document.getElementById(json['removedPlayer']).remove();
+                        break;
 
                 }
             }
@@ -76,5 +81,7 @@
 </script>
 
 <style scoped>
-
+#gameSession {
+    color: white;
+}
 </style>
