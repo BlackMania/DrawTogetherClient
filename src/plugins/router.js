@@ -4,7 +4,7 @@ import Login from "../components/Login";
 import Register from "../components/Register";
 import Main from "../components/Main";
 import Dashboard from "@/components/Dashboard";
-import Lobby from "../components/Lobby";
+import Game from "../components/Game";
 
 Vue.use(Router);
 
@@ -34,13 +34,7 @@ export default new Router({
 
                 {
                     path: 'play',
-                    component: Lobby,
-                    children: [
-                        {
-                            path: 'lobby/:lobbyid',
-                            component: Lobby
-                        }
-                    ]
+                    component: Game,
                 }
             ]
         },
