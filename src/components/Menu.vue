@@ -1,7 +1,7 @@
 <template>
     <v-card
             height="300"
-            width="300"
+            width="10%"
             min-height="100vh"
             tile
     >

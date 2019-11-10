@@ -1,7 +1,7 @@
 <template>
     <div>
         <Menu class="left-float"/>
-        <router-view :key="this.$route.fullPath" class="left-float"></router-view>
+        <router-view :key="this.$route.fullPath" class="left-float content-container"></router-view>
     </div>
 </template>
 
@@ -20,5 +20,11 @@
 
     .left-float {
         float: left;
+    }
+    .content-container
+    {
+        width: 70%;
+        margin-left: 10%;
+        margin-right: 10%;
     }
 </style>
