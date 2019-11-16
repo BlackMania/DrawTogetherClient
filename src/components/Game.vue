@@ -7,6 +7,12 @@
             v-bind:lobby-id="lobby"
             v-bind:websocket="websocket"
             />
+            <v-row>
+                <v-col cols="4"></v-col>
+                <v-col cols="4">
+                    <v-btn color="primary" width="100%" @click="createGame">Create Game</v-btn></v-col>
+                <v-col cols="4"></v-col>
+            </v-row>
         </v-container>
 </template>
 
@@ -21,10 +27,14 @@ import LobbyInfo from "@/components/LobbyInfo";
             lobbyList: []
         }),
         methods: {
+            createGame: function () {
+                this.websocket.send('{"task": "CreateGame" }');
+            }
         },
         created(){
             this.websocket= new WebSocket("ws://localhost:8090/ws/lobby/" + this.$session.get('jwttoken'));
             var component = this;
+            var router = this.$router;
             this.websocket.onmessage = function(message)
             {
                 if(message.data === "You successfully connected")
@@ -40,8 +50,7 @@ import LobbyInfo from "@/components/LobbyInfo";
                         // eslint-disable-next-line no-case-declarations
                         let gameSessionId = json['gameSessionId'];
                         // eslint-disable-next-line no-case-declarations
-                        let data = `{"task": "JoinGame", "nickname": "John", "gameSessionId": "${gameSessionId}"}`;
-                        this.send(data);
+                        router.push({ name: 'gameLobby', params: { lobbyId: gameSessionId, webSocket: this } });
                         break;
                     case 'updateGameList':
                         for(let i = 0; i < json['gameLobbys'].length; i++)
@@ -54,6 +63,10 @@ import LobbyInfo from "@/components/LobbyInfo";
         },
         beforeRouteLeave(to, from, next) {
             if(to.path === "/main/lobby")
+            {
+                next();
+            }
+            else if(to.path === "/main/play")
             {
                 next();
             }
