@@ -19,7 +19,6 @@
             if (!this.$session.exists()) {
                 this.$router.push('/login');
             }
-            else this.$router.push('/main/dashboard')
         },
         computed: {
             theme() {
