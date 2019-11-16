@@ -5,6 +5,7 @@ import Register from "../components/Register";
 import Main from "../components/Main";
 import Dashboard from "@/components/Dashboard";
 import Game from "../components/Game";
+import Lobby from "@/components/Lobby";
 
 Vue.use(Router);
 
@@ -29,12 +30,19 @@ export default new Router({
             children: [
                 {
                     path: 'dashboard',
+                    name: 'dashboard',
                     component: Dashboard
                 },
-
                 {
                     path: 'play',
+                    name: 'play',
                     component: Game,
+                },
+                {
+                    path: 'lobby',
+                    name: 'gameLobby',
+                    component: Lobby,
+                    props: true
                 }
             ]
         },
