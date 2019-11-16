@@ -1,35 +1,55 @@
 <template>
-    <v-col cols="12">
-        <v-card>
-            <v-card-actions>
-                <v-row>
-                    <v-col cols="10">
-                        <v-card-title>
-                            {{ lobbyId }}
-                        </v-card-title>
-                    </v-col>
-                    <v-col cols="2">
-                        <v-card-title>
-                            <v-btn @click="joinGame" width="100%" color="primary">Join</v-btn>
-                        </v-card-title>
-                    </v-col>
-                </v-row>
-            </v-card-actions>
-        </v-card>
-    </v-col>
+    <div>
+        <h1> {{ lobbyId }}</h1>
+        <LobbyPlayer
+                v-for="player in playerList"
+                v-bind:key="player"
+                v-bind:player-name="player"
+        />
+    </div>
 </template>
 
 <script>
+    import LobbyPlayer from "@/components/LobbyPlayer";
     export default {
         name: "Lobby",
+        components: {LobbyPlayer},
         props: {
             lobbyId: String,
             webSocket: WebSocket
         },
-        methods: {
-            joinGame: function() {
-                this.websocket.send(`{"task": "JoinGame", "gameSessionId": "${this.lobbyId}", "nickname": "${this.$session.get("username")}"}`);
-            }
+        data: () => ({
+            playerList: []
+        }),
+        created() {
+            var component = this;
+            this.webSocket.send(`{ "task": "JoinGame", "gameSessionId": "${this.lobbyId}", "nickname": "${this.$session.get('username')}" }`);
+            this.webSocket.onmessage = function(message)
+            {
+                let json = JSON.parse(message.data);
+                let task = json['task'];
+                switch(task)
+                {
+                    case 'addPlayers':
+                        for(let i = 0; i < json['players'].length; i++)
+                        {
+                            component.playerList.push(json['players'][i]);
+                        }
+                        break;
+                    case 'addNewPlayer':
+                        component.playerList.push(json['newPlayer']);
+                        break;
+                    case 'removePlayer':
+                        // eslint-disable-next-line no-case-declarations
+                        let int = component.playerList.indexOf(json['removedPlayer']);
+                        component.playerList.splice(int, 1);
+                        break;
+                }
+            };
+        },
+        beforeRouteLeave(to, from, next) {
+            this.webSocket.close();
+            next();
         }
     }
 </script>
