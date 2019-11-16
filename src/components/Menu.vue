@@ -13,12 +13,12 @@
                 floating
         >
             <v-list>
-                <v-list-item
+                <router-link style="text-decoration: none !important;"
                         v-for="([icon, text, link], i) in items"
                         :key="i"
-                        link
-                        @click="navigate(link)"
+                        :to="{ name: link}"
                 >
+                <v-list-item link>
                     <v-list-item-icon>
                         <v-icon>{{ icon }}</v-icon>
                     </v-list-item-icon>
@@ -27,6 +27,7 @@
                         <v-list-item-title>{{ text }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+                </router-link>
                 <v-divider></v-divider>
                 <v-divider></v-divider>
                 <v-divider></v-divider>
@@ -49,9 +50,9 @@
         name: "Menu",
         data: () => ({
             items: [
-                ['fas fa-columns', 'Dashboard', '/main/dashboard'],
-                ['fas fa-play', 'Play Game', '/main/play'],
-                ['fas fa-cog', 'Settings', '/main/dashboard'],
+                ['fas fa-columns', 'Dashboard', 'dashboard'],
+                ['fas fa-play', 'Play Game', 'play'],
+                ['fas fa-cog', 'Settings', 'dashboard'],
             ],
         }),
         methods: {
@@ -59,9 +60,6 @@
                 this.$session.destroy();
                 this.$router.push('/login');
             },
-            navigate: function(route) {
-                this.$router.push(route);
-            }
         },
     }
 </script>
