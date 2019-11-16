@@ -1,11 +1,13 @@
 <template>
     <div>
         <h1> {{ lobbyId }}</h1>
+        <v-row>
         <LobbyPlayer
                 v-for="player in playerList"
                 v-bind:key="player"
                 v-bind:player-name="player"
         />
+        </v-row>
     </div>
 </template>
 
