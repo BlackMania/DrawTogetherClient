@@ -4,8 +4,9 @@
         <v-row>
         <LobbyPlayer
                 v-for="player in playerList"
-                v-bind:key="player"
-                v-bind:player-name="player"
+                v-bind:key="player.player"
+                v-bind:player-name="player.player"
+                v-bind:room-master="player.roomMaster"
         />
         </v-row>
         <v-row>
@@ -38,25 +39,44 @@
             this.webSocket.send(`{ "task": "JoinGame", "gameSessionId": "${this.lobbyId}", "nickname": "${this.$session.get('username')}" }`);
             this.webSocket.onmessage = function(message)
             {
-                alert(message.data);
                 let json = JSON.parse(message.data);
                 let task = json['task'];
+                let possibleError = json['error'];
+                if(possibleError != null)
+                {
+                    component.$router.push("/main/play");
+                }
                 switch(task)
                 {
                     case 'addPlayers':
                         for(let i = 0; i < json['players'].length; i++)
                         {
-                            component.playerList.push(json['players'][i]);
+                            component.playerList.push({player: json['players'][i], roomMaster: json['roomMaster']});
                         }
                         break;
                     case 'addNewPlayer':
-                        component.playerList.push(json['newPlayer']);
+                        component.playerList.push({player: json['newPlayer'], roomMaster: json['newRoomMaster']});
                         break;
                     case 'removePlayer':
                         // eslint-disable-next-line no-case-declarations
-                        let int = component.playerList.indexOf(json['removedPlayer']);
+                        let int = null;
+                        for(let i = 0; i < component.playerList.length; i++)
+                        {
+                            if(component.playerList[i].player === json['removedPlayer'])
+                            {
+                                int = i;
+
+                            }
+                            if(component.playerList[i].player === json['newRoomMaster'])
+                            {
+                                for(let j = 0; j < component.playerList.length; j++)
+                                {
+                                    component.playerList[j].roomMaster = json['newRoomMaster'];
+                                }
+                            }
+                        }
                         component.playerList.splice(int, 1);
-                        break;
+
                 }
             };
         },
