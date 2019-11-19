@@ -8,6 +8,11 @@
                 v-bind:player-name="player"
         />
         </v-row>
+        <v-row>
+            <v-col cols="4"></v-col>
+            <v-col cols="4"><v-btn color="primary" @click="startGame">Start Game</v-btn></v-col>
+            <v-col cols="4"></v-col>
+        </v-row>
     </div>
 </template>
 
@@ -23,11 +28,17 @@
         data: () => ({
             playerList: []
         }),
+        methods: {
+            startGame: function() {
+                this.webSocket.send(`{ "task": "StartGame" }`);
+            }
+        },
         created() {
             var component = this;
             this.webSocket.send(`{ "task": "JoinGame", "gameSessionId": "${this.lobbyId}", "nickname": "${this.$session.get('username')}" }`);
             this.webSocket.onmessage = function(message)
             {
+                alert(message.data);
                 let json = JSON.parse(message.data);
                 let task = json['task'];
                 switch(task)
