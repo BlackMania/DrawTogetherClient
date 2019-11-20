@@ -30,11 +30,17 @@
                     </div>
                 </v-col>
                 <v-col cols="7">
-                    <div id="word-count"></div>
-                    <div class="timer">
-                        <div id="timer">60</div>
-                    </div>
-                    <DrawCanvas/>
+                    <v-row>
+                        <v-col cols="12">
+                            <div class="timer">
+                                <div id="timer">60</div>
+                            </div>
+                        </v-col>
+                        <v-col cols="12">
+                            <div id="word-count"></div>
+                        </v-col>
+                    </v-row>
+                    <DrawCanvas v-bind:web-socket="webSocket"/>
                 </v-col>
                 <v-col cols="3">
                     <Chat></Chat>
@@ -63,7 +69,9 @@
         data: () => ({
             playerList: [],
             initPlayerList: [],
-            drawer: null
+            drawer: null,
+            canvas: null,
+            ctx: null
 
         }),
         methods: {
@@ -132,7 +140,7 @@
                         let ComponentClass = Vue.extend(ChooseWordOverlay);
                         // eslint-disable-next-line no-case-declarations
                         let instance = new ComponentClass({
-                            propsData: { webSocket: this, words: wordArray }
+                            propsData: {webSocket: this, words: wordArray}
                         });
                         instance.$mount();
                         component.$refs.container.appendChild(instance.$el)
@@ -140,8 +148,7 @@
                     case 'wordSet':
                         // eslint-disable-next-line no-case-declarations
                         let word = "";
-                        for(let i = 0; i < json['wordCount']; i++)
-                        {
+                        for (let i = 0; i < json['wordCount']; i++) {
                             word += '_ ';
                         }
                         document.getElementById("word-count").innerHTML = word;
@@ -152,20 +159,26 @@
                     case 'roundEnded':
                         alert('Round ended');
                         break;
+                    case 'addCoordinate':
+                        component.canvas = document.getElementById('can');
+                        component.ctx = component.canvas.getContext('2d');
+                        component.ctx.beginPath();
+                        component.ctx.moveTo(json['prevX'], json['prevY']);
+                        component.ctx.lineTo(json['currX'], json['currY']);
+                        component.ctx.strokeStyle = json['strokeStyle'];
+                        component.ctx.lineWidth = json['lineWidth'];
+                        component.ctx.stroke();
+                        component.ctx.closePath();
+                        break;
                 }
             };
         },
         beforeRouteLeave(to, from, next) {
-            if(to.path === "/main/lobby")
-            {
+            if (to.path === "/main/lobby") {
                 next();
-            }
-            else if(to.path === "/main/play")
-            {
+            } else if (to.path === "/main/play") {
                 next();
-            }
-            else
-            {
+            } else {
                 this.webSocket.close();
                 next();
             }
@@ -183,17 +196,17 @@
     }
 
     .timer {
+        text-align: center;
         border-radius: 50px;
         border: 1px black solid;
-        width: 60px;
-        height: 60px;
-        position: relative;
-        margin-left: 1%;
+        width: 8%;
+        height: auto;
+        margin: auto;
+        overflow: hidden;
+        padding: 20px;
     }
 
     #timer {
-        position: absolute;
-        left: 20px;
-        top: 15px;
+
     }
 </style>
