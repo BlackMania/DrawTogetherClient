@@ -4,8 +4,8 @@ import Login from "../components/Login";
 import Register from "../components/Register";
 import Main from "../components/Main";
 import Dashboard from "@/components/Dashboard";
-import Game from "../components/Game";
-import Lobby from "@/components/Lobby";
+import Game from "../components/Lobby/Game";
+import Lobby from "@/components/Lobby/Lobby";
 
 Vue.use(Router);
 
