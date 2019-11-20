@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import LobbyInfo from "@/components/LobbyInfo";
+import LobbyInfo from "./LobbyInfo";
 
     export default {
         name: "Game",

@@ -32,6 +32,21 @@
             websocket: WebSocket,
         },
         methods: {
+        },
+        beforeRouteLeave(to, from, next) {
+            if(to.path === "/main/lobby")
+            {
+                next();
+            }
+            else if(to.path === "/main/play")
+            {
+                next();
+            }
+            else
+            {
+                this.websocket.close();
+                next();
+            }
         }
     }
 </script>
