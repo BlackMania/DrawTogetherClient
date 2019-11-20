@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <canvas style="background-color: white" id="can" width="800" height="800">
+        <canvas style="background-color: white" width="900" height="600" id="can">
         </canvas>
     </v-container>
 </template>
@@ -19,8 +19,11 @@
             currY: 0,
             dot_flag: false,
             x: "black",
-            y: 2
+            y: 2,
         }),
+        props: {
+            webSocket: WebSocket
+        },
         methods: {
             initGame: function() {
                 let comp = this;
@@ -71,6 +74,8 @@
                 }
             },
             draw: function() {
+                this.webSocket
+                    .send(`{ "task": "SendCoordinates", "prevX": "${this.prevX}", "prevY": "${this.prevY}", "currX": "${this.currX}", "currY": "${this.currY}", "strokeStyle": "${this.x}", "lineWidth": "${this.y}" }`);
                 this.ctx.beginPath();
                 this.ctx.moveTo(this.prevX, this.prevY);
                 this.ctx.lineTo(this.currX, this.currY);
