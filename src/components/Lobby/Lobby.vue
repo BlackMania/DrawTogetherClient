@@ -43,7 +43,7 @@
                     <DrawCanvas v-bind:web-socket="webSocket"/>
                 </v-col>
                 <v-col cols="3">
-                    <Chat></Chat>
+                    <Chat v-bind:web-socket="webSocket"></Chat>
                 </v-col>
             </v-row>
         </v-container>
@@ -81,13 +81,15 @@
         },
         created() {
             var component = this;
+            var con = console;
             this.webSocket.send(`{ "task": "JoinGame", "gameSessionId": "${this.lobbyId}", "nickname": "${this.$session.get('username')}" }`);
             this.webSocket.onmessage = function (message) {
                 let json = JSON.parse(message.data);
                 let task = json['task'];
                 let possibleError = json['error'];
                 if (possibleError != null) {
-                    component.$router.push("/main/play");
+                    con.log(json['reason']);
+                    con.log(json['error']);
                 }
                 switch (task) {
                     case 'addPlayers':
@@ -169,6 +171,18 @@
                         component.ctx.lineWidth = json['lineWidth'];
                         component.ctx.stroke();
                         component.ctx.closePath();
+                        break;
+                    case 'updateChat':
+                        // eslint-disable-next-line no-case-declarations
+                        let chat = document.getElementById('chat');
+                        // eslint-disable-next-line no-case-declarations
+                        let element = document.createElement("div");
+                        if(json['correct'])
+                        {
+                            element.style.color = "green";
+                        }
+                        element.innerHTML = json['messager'] + ": " + json['message'];
+                        chat.appendChild(element);
                         break;
                 }
             };

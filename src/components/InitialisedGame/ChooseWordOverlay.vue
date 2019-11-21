@@ -2,12 +2,12 @@
     <v-overlay :value="overlay">
         <v-row>
             <v-col cols="4">
-                <button @click="sendWord" :value="words[2]" >
+                <button @click="sendWord" :value="words[0]" >
                     {{ words[0] }}
                 </button>
             </v-col>
             <v-col cols="4">
-                <button @click="sendWord" :value="words[2]" >
+                <button @click="sendWord" :value="words[1]" >
                     {{ words[1] }}
                 </button>
             </v-col>
