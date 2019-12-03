@@ -41,6 +41,20 @@
                 this.canvas.addEventListener("mouseout", function (e) {
                     comp.findXY('out', e)
                 }, false);
+
+                this.canvas.addEventListener("touchstart", function (e) {
+                    comp.findXYTouch('down', e)
+                }, false);
+                this.canvas.addEventListener("touchend", function (e) {
+                    comp.findXYTouch('up', e)
+                }, false);
+                this.canvas.addEventListener("touchmove", function (e) {
+                    comp.findXYTouch('move', e)
+                }, false);
+                this.canvas.addEventListener("touchcancel", function (e) {
+                    comp.findXYTouch('out', e)
+                }, false);
+
             },
             findXY: function (res, e) {
                 if(this.$parent.drawer !== this.$session.get('username')) return;
@@ -69,6 +83,38 @@
                         this.prevY = this.currY;
                         this.currX = e.clientX - this.canvas.offsetLeft;
                         this.currY = e.clientY - this.canvas.offsetTop;
+                        this.draw();
+                    }
+                }
+            },
+            findXYTouch: function (res, e) {
+                if(this.$parent.drawer !== this.$session.get('username')) return;
+                let touch = e.touches[0];
+                if (res === 'down') {
+                    this.prevX = this.currX;
+                    this.prevY = this.currY;
+                    this.currX = Math.round(touch.clientX) - this.canvas.offsetLeft;
+                    this.currY = Math.round(touch.clientY) - this.canvas.offsetTop;
+
+                    this.flag = true;
+                    this.dot_flag = true;
+                    if (this.dot_flag) {
+                        this.ctx.beginPath();
+                        this.ctx.fillStyle = this.x;
+                        this.ctx.fillRect(this.currX, this.currY, 2, 2);
+                        this.ctx.closePath();
+                        this.dot_flag = false;
+                    }
+                }
+                if (res === 'up' || res === "out") {
+                    this.flag = false;
+                }
+                if (res === 'move') {
+                    if (this.flag) {
+                        this.prevX = this.currX;
+                        this.prevY = this.currY;
+                        this.currX = Math.round(touch.clientX) - this.canvas.offsetLeft;
+                        this.currY = Math.round(touch.clientY) - this.canvas.offsetTop;
                         this.draw();
                     }
                 }
