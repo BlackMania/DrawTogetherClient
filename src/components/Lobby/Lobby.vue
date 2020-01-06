@@ -78,6 +78,12 @@
             startGame: function () {
                 this.webSocket.send(`{ "task": "StartGame" }`);
             },
+            erase: function () {
+
+                this.canvas = document.getElementById('can');
+                this.ctx = this.canvas.getContext('2d');
+                this.ctx.clearRect(0, 0, 900, 600);
+            }
         },
         created() {
             var component = this;
@@ -90,7 +96,9 @@
                 if (possibleError != null) {
                     con.log(json['reason']);
                     con.log(json['error']);
+                    return;
                 }
+                alert(message.data);
                 switch (task) {
                     case 'addPlayers':
                         for (let i = 0; i < json['players'].length; i++) {
@@ -109,8 +117,11 @@
                             if (component.playerList[i].player === json['removedPlayer']) {
                                 int = i;
                             }
-                            if (component.initPlayerList[i].playerName === json['removedPlayer']) {
-                                initPlayer = i;
+                            if(component.initPlayerList.length !== 0)
+                            {
+                                if (component.initPlayerList[i].playerName === json['removedPlayer']) {
+                                    initPlayer = i;
+                                }
                             }
                             if (component.playerList[i].player === json['newRoomMaster']) {
                                 for (let j = 0; j < component.playerList.length; j++) {
@@ -145,7 +156,7 @@
                             propsData: {webSocket: this, words: wordArray}
                         });
                         instance.$mount();
-                        component.$refs.container.appendChild(instance.$el)
+                        component.$refs.container.appendChild(instance.$el);
                         break;
                     case 'wordSet':
                         // eslint-disable-next-line no-case-declarations
@@ -157,9 +168,6 @@
                         break;
                     case 'updateTimer':
                         document.getElementById('timer').innerHTML = json['currentTime'];
-                        break;
-                    case 'roundEnded':
-                        alert('Round ended');
                         break;
                     case 'addCoordinate':
                         component.canvas = document.getElementById('can');
@@ -177,13 +185,30 @@
                         let chat = document.getElementById('chat');
                         // eslint-disable-next-line no-case-declarations
                         let element = document.createElement("div");
-                        if(json['correct'])
-                        {
+                        if (json['correct']) {
                             element.style.color = "green";
                         }
                         element.innerHTML = json['messager'] + ": " + json['message'];
                         chat.appendChild(element);
                         break;
+                    case 'roundEnded':
+                        component.drawer = json['drawer'];
+                        component.erase();
+                        break;
+                    case 'chooseWord2':
+                        component.drawer = json['drawer'];
+                        if (json['drawer'] === component.$session.get('username')) {
+                            this.send('{ "task": "GetDrawWords" }');
+                        }
+                        component.drawer = json['drawer'];
+                        component.erase();
+                        break;
+                    case 'backToLobbyState':
+                        document.getElementById("game-state").style.display = 'none';
+                        document.getElementById("lobby-state").style.display = 'inline-block';
+                        component.erase();
+                        component.initPlayerList = [];
+                        alert('End of the game. Returning to lobby');
                 }
             };
         },
