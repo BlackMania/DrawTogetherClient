@@ -102,11 +102,14 @@ export default {
         let username = document.getElementById('username').value;
         let password = document.getElementById('password').value;
 
-        const response = await fetch('http://localhost:9091/api/secured/login', {
+        let json = JSON.parse(`{"username": "${username}", "password": "${password}" }`);
+        const response = await fetch('http://localhost:9091/api/auth/login', {
           method: 'POST',
           headers: {
-            'Authorization': 'Basic ' + btoa(username + ':' + password)
+            "Content-Type": "application/json",
+            "Accept": "application/json"
           },
+          body: JSON.stringify(json)
         });
         if(response.status === 200)
         {
