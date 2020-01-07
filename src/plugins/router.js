@@ -1,11 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from "../components/Login";
-import Register from "../components/Register";
-import Main from "../components/Main";
-import Dashboard from "@/components/Dashboard";
-import Game from "../components/Lobby/Game";
+import LobbyList from "@/components/Lobbylist/LobbyList";
 import Lobby from "@/components/Lobby/Lobby";
+import Login from "@/components/Login/Login";
+import Menu from "@/components/Menu";
 
 Vue.use(Router);
 
@@ -13,38 +11,28 @@ export default new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
+
         {
-            path: '/login',
-            name: 'login',
-            component: Login,
+            path: "/login",
+            name: "login",
+            component: Login
         },
         {
-            path: '/register',
-            name: 'register',
-            component: Register
-        },
-        {
-            path: '/main',
-            name: 'main',
-            component: Main,
+            path: "/",
+            name: "",
+            component: Menu,
             children: [
                 {
-                    path: 'dashboard',
-                    name: 'dashboard',
-                    component: Dashboard
+                    path: 'lobbylist',
+                    name: 'lobbylist',
+                    component: LobbyList,
                 },
                 {
-                    path: 'play',
-                    name: 'play',
-                    component: Game,
+                    path: "lobby",
+                    name: "lobby",
+                    component: Lobby
                 },
-                {
-                    path: 'lobby',
-                    name: 'gameLobby',
-                    component: Lobby,
-                    props: true
-                }
             ]
-        },
+        }
     ]
 })

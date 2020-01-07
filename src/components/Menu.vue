@@ -1,69 +1,84 @@
 <template>
-    <v-card
-            height="300"
-            width="10%"
-            min-height="100vh"
-            tile
-    >
-        <v-navigation-drawer
-                dark
-                src="../assets/background-1.jpg"
-                width="100%"
-                permanent
-                floating
-        >
-            <v-list>
-                <router-link style="text-decoration: none !important;"
-                        v-for="([icon, text, link], i) in items"
-                        :key="i"
-                        :to="{ name: link}"
+        <div class="main">
+                <v-navigation-drawer
+                        v-model="drawer"
+                        :color="color"
+                        :expand-on-hover="true"
+                        absolute
+                        dark
                 >
-                <v-list-item link>
-                    <v-list-item-icon>
-                        <v-icon>{{ icon }}</v-icon>
-                    </v-list-item-icon>
+                    <v-list
+                            dense
+                            nav
+                            class="py-0"
+                    >
+                        <v-list-item two-line>
+                            <v-list-item-avatar>
+                                <img src="https://randomuser.me/api/portraits/men/81.jpg">
+                            </v-list-item-avatar>
 
-                    <v-list-item-content>
-                        <v-list-item-title>{{ text }}</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                </router-link>
-                <v-divider></v-divider>
-                <v-divider></v-divider>
-                <v-divider></v-divider>
-                <v-list-item link @click="logout">
-                    <v-list-item-icon>
-                        <v-icon>fas fa-sign-out-alt</v-icon>
-                    </v-list-item-icon>
+                            <v-list-item-content>
+                                <v-list-item-title>Application</v-list-item-title>
+                                <v-list-item-subtitle>Subtext</v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
 
-                    <v-list-item-content>
-                        <v-list-item-title>Logout</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-            </v-list>
-        </v-navigation-drawer>
-    </v-card>
+                        <v-divider></v-divider>
+
+                        <v-list-item
+                                v-for="item in items"
+                                :key="item.title"
+                                link
+                        >
+                            <v-list-item-icon>
+                                <v-icon>{{ item.icon }}</v-icon>
+                            </v-list-item-icon>
+
+                            <v-list-item-content>
+                                <v-list-item-title>{{ item.title }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list>
+                </v-navigation-drawer>
+            <v-row
+                    align="center"
+                    justify="center"
+            >
+                <router-view/>
+            </v-row>
+
+
+        </div>
 </template>
 
 <script>
     export default {
-        name: "Menu",
-        data: () => ({
-            items: [
-                ['fas fa-columns', 'Dashboard', 'dashboard'],
-                ['fas fa-play', 'Play Game', 'play'],
-                ['fas fa-cog', 'Settings', 'dashboard'],
-            ],
-        }),
-        methods: {
-            logout: function() {
-                this.$session.destroy();
-                this.$router.push('/login');
-            },
-        },
+        name: "Home",
+        data () {
+            return {
+                drawer: true,
+                items: [
+                    { title: 'Dashboard', icon: 'mdi-view-dashboard' },
+                    { title: 'About', icon: 'mdi-help-box' },
+                ],
+                color: 'primary',
+                expandOnHover: false,
+            }
+        }
     }
 </script>
 
 <style scoped>
+.main {
+    background-image: url("../../src/assets/background.jpg");
+    background-size: cover;
+    width: 100%;
+}
 
+    >>>.v-list-item__title {
+        font-size: 18px !important;
+    }
+>>>.v-icon.v-icon {
+    font-size: 35px;
+}
 </style>
