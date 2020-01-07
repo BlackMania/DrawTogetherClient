@@ -8,11 +8,10 @@
                 sm8
                 md4
         >
-            <v-card class="elevation-12" tile>
+            <v-card class="elevation-12" tile color="rgba(255, 255, 255, 0.9)">
                 <v-toolbar
                         color="#1c343d"
                         dark
-                        t
                 >
                     <v-toolbar-title>Login</v-toolbar-title>
                     <v-spacer></v-spacer>
