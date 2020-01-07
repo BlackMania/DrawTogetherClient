@@ -28,7 +28,6 @@
                     dom[i].classList.remove("active");
 
                 }
-                window.console.log(event);
                 if(event.target.classList.contains("col-10"))
                 {
                     let dom = event.target.offsetParent;
