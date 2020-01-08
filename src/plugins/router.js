@@ -4,6 +4,7 @@ import LobbyList from "@/components/Lobbylist/LobbyList";
 import Lobby from "@/components/Lobby/Lobby";
 import Login from "@/components/Login/Login";
 import Menu from "@/components/Menu";
+import Logout from "../components/Login/Logout";
 
 Vue.use(Router);
 
@@ -16,10 +17,14 @@ export default new Router({
             path: "/login",
             name: "login",
             component: Login
+        },{
+            path: "/logout",
+            name: "logout",
+            component: Logout
         },
         {
             path: "/",
-            name: "",
+            name: "menu",
             component: Menu,
             children: [
                 {
@@ -30,7 +35,8 @@ export default new Router({
                 {
                     path: "lobby",
                     name: "lobby",
-                    component: Lobby
+                    component: Lobby,
+                    props: true
                 },
             ]
         }

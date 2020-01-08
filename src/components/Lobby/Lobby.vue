@@ -2,12 +2,9 @@
     <div class="lobby">
         <h1 class="lobby-name">Testlobby</h1>
         <v-row>
-            <Player/>
-            <Player/>
-            <Player/>
-            <Player/>
-            <Player/>
-            <Player/>
+            <Player v-for="name in players"
+                    v-bind:key="name"
+                    v-bind:user-name="name"/>
         </v-row>
         <LeaveLobbyButton/>
         <StartGameButton/>
@@ -21,7 +18,35 @@
 
     export default {
         name: "Lobby",
-        components: {LeaveLobbyButton, StartGameButton, Player}
+        components: {LeaveLobbyButton, StartGameButton, Player},
+        props: {
+            websocket: WebSocket
+        },
+        data() {
+            return {
+                players: [],
+                roomMaster: null,
+            }
+        },
+        created() {
+            let comp = this;
+
+            this.websocket.onmessage = new function (message) {
+                let json = JSON.parse(message.data);
+                if(json.hasOwnProperty("error")) {
+                    alert(json.error);
+                }
+                switch(json.task) {
+                    case "addPlayers":
+                        for(let i = 0; json.players; i++)
+                        {
+                            comp.players.push(json.players[i]);
+                        }
+                        comp.roomMaster = json.roomMaster;
+                        break;
+                }
+            }
+        }
     }
 </script>
 

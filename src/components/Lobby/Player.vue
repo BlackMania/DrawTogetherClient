@@ -4,7 +4,7 @@
 
         </div>
         <div class="text">
-            Playername
+            {{userName}}
         </div>
         <div class="room-master">
             Roommaster
@@ -14,7 +14,11 @@
 
 <script>
     export default {
-        name: "Player"
+        name: "Player",
+        props: {
+            userName: String,
+            roomMaster: Boolean
+        }
     }
 </script>
 

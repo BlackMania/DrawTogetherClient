@@ -45,7 +45,7 @@
 
                     <v-btn color="#1c343d" tile>Register</v-btn>
 
-                    <v-btn color="#1c343d" class="mr-4" tile >Login</v-btn>
+                    <v-btn color="#1c343d" class="mr-4" tile v-on:click="login">Login</v-btn>
                 </v-card-actions>
             </v-card>
         </v-flex>
@@ -64,6 +64,36 @@
                 },
             }
         },
+        methods: {
+            login: async function () {
+                if (this.$refs.form.validate()) {
+                    let username = document.getElementById('username').value;
+                    let password = document.getElementById('password').value;
+
+                    let json = JSON.parse(`{"username": "${username}", "password": "${password}" }`);
+                    const response = await fetch('http://localhost:9091/api/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify(json)
+                    });
+
+                    let jsonResponse = await response.json();
+
+                    if(jsonResponse.hasOwnProperty('token'))
+                    {
+                        this.$session.start();
+                        this.$session.set("token", jsonResponse.token);
+                        this.$session.set("username", username);
+                        this.$router.push({name: 'menu'});
+                    } else {
+                        alert("Wrong username or password");
+                    }
+                }
+            }
+        }
     }
 </script>
 

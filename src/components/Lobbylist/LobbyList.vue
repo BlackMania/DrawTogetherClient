@@ -4,29 +4,20 @@
         <v-row>
             <LobbyListHeader/>
             <div class="lobby-items">
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
-                <LobbyListItem v-bind:lobby-name="'Testlobby'" v-bind:player-count="2"/>
+                <LobbyListItem v-for="lobby in lobbies"
+                               v-bind:lobby-name="lobby.lobbyName"
+                               v-bind:lobby-id="lobby.lobbyId"
+                               v-bind:key="lobby.lobbyId"
+                               v-bind:player-count="lobby.playerCount"
+                />
             </div>
             <v-col cols="0"/>
             <v-spacer/>
             <v-col cols="4">
-                <CreateLobbyButton/>
+                <CreateLobbyButton v-bind:websocket="websocket"/>
             </v-col>
             <v-col cols="4" style="padding-right: 0">
-                <JoinLobbyButton v-bind:lobby-id="selectedLobby"/>
+                <JoinLobbyButton v-bind:lobby-id="selectedLobby" v-bind:websocket="websocket"/>
             </v-col>
         </v-row>
     </div>
@@ -44,7 +35,37 @@
         data() {
             return {
                 selectedLobby: null,
-                lobbies: []
+                lobbies: [],
+                websocket: null
+            }
+        },
+        created() {
+            this.websocket= new WebSocket("ws://localhost:8090/ws/lobby/" + this.$session.get('token'));
+            let comp = this;
+
+            this.websocket.onmessage = function (message) {
+                window.console.log(message.data);
+                if (message.data === "You successfully connected") {
+                    this.send('{"task": "GetGames"}');
+                    return;
+                }
+                let json = JSON.parse(message.data);
+                if (json.hasOwnProperty('error')) {
+                    alert(json.error);
+                }
+                switch (json.task) {
+                    case "updateGameList":
+                        var lobbies = json.gameLobbys;
+                        for (let i = 0; i < lobbies.length; i++) {
+                            comp.lobbies.push(JSON.parse(`{"lobbyId": "${lobbies[i].lobbyId}", "lobbyName": "${lobbies[i].lobbyName}", "playerCount": 2}`));
+                        }
+                        break;
+                    case "joinGame":
+
+                        this.send(`{ "task": "JoinGame", "gameSessionId": "${json.gameSessionId}", "nickname": "${comp.$session.get('username')}" }`);
+                        comp.$router.push({name: 'lobby', params: {websocket: this}});
+                        break;
+                }
             }
         }
     }

@@ -15,7 +15,6 @@
     export default {
         name: "LobbyListItem",
         props: {
-            websocket: WebSocket,
             lobbyName: String,
             playerCount: Number,
             lobbyId: String

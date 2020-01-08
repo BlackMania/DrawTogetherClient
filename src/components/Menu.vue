@@ -29,6 +29,7 @@
                                 v-for="item in items"
                                 :key="item.title"
                                 link
+                                v-on:click="navigateTo(item.link)"
                         >
                             <v-list-item-icon>
                                 <v-icon>{{ item.icon }}</v-icon>
@@ -58,11 +59,21 @@
             return {
                 drawer: true,
                 items: [
-                    { title: 'Dashboard', icon: 'mdi-view-dashboard' },
-                    { title: 'About', icon: 'mdi-help-box' },
+                    { title: 'Dashboard', icon: 'mdi-view-dashboard', link: 'dashboard' },
+                    { title: 'Start game', icon: 'mdi-help-box', link: 'lobbylist' },
                 ],
                 color: 'primary',
-                expandOnHover: false,
+            }
+        },
+        methods: {
+            navigateTo: function (link) {
+                this.$router.push({name: link});
+            }
+        },
+        created() {
+            if(!this.$session.exists())
+            {
+                this.$router.push({name: 'login'});
             }
         }
     }
@@ -76,7 +87,7 @@
 }
 
     >>>.v-list-item__title {
-        font-size: 18px !important;
+        font-size: 15px !important;
     }
 >>>.v-icon.v-icon {
     font-size: 35px;
