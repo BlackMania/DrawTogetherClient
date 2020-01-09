@@ -9,7 +9,7 @@ Vue.config.productionTip = false;
 
 // Session config
 let options = {
-  persist: true
+  persist: false
 };
 Vue.use(VueSession, options);
 

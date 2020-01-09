@@ -1,12 +1,12 @@
 <template>
-    <v-col cols="4" class="container">
+    <v-col :cols="colSize" class="container">
         <div class="image">
 
         </div>
         <div class="text">
             {{userName}}
         </div>
-        <div class="room-master">
+        <div v-if="userName === this.$session.get('username')" class="room-master">
             Roommaster
         </div>
     </v-col>
@@ -17,7 +17,11 @@
         name: "Player",
         props: {
             userName: String,
-            roomMaster: Boolean
+        },
+        data() {
+            return {
+                colSize: 4
+            }
         }
     }
 </script>
@@ -35,7 +39,7 @@
     }
 
     .text {
-        position:  absolute;
+        position: absolute;
         left: 0;
         bottom: 8%;
         right: 0;
@@ -45,7 +49,7 @@
     }
 
     .image {
-        position:  absolute;
+        position: absolute;
         margin: auto;
         top: 10%;
         left: 15%;
@@ -59,7 +63,7 @@
     }
 
     .room-master {
-        position:  absolute;
+        position: absolute;
         left: 0;
         bottom: 4%;
         right: 0;

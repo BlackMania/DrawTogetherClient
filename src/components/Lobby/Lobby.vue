@@ -25,27 +25,24 @@
         data() {
             return {
                 players: [],
-                roomMaster: null,
+                roomMaster: null
             }
         },
         created() {
             let comp = this;
-
-            this.websocket.onmessage = new function (message) {
+            this.websocket.onmessage = function(message) {
                 let json = JSON.parse(message.data);
-                if(json.hasOwnProperty("error")) {
-                    alert(json.error);
-                }
+
                 switch(json.task) {
                     case "addPlayers":
-                        for(let i = 0; json.players; i++)
+                        for(let i = 0; i < json.players.length; i++)
                         {
                             comp.players.push(json.players[i]);
                         }
                         comp.roomMaster = json.roomMaster;
                         break;
                 }
-            }
+            };
         }
     }
 </script>

@@ -34,7 +34,7 @@
                 } else {
                     event.target.classList.add("active");
                 }
-                this.$parent.selectedLobby = "Test";
+                this.$parent.selectedLobby =  this.lobbyId;
             }
         }
     }

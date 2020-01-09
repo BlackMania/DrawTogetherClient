@@ -19,6 +19,7 @@
         methods: {
             joinLobby: function () {
                 this.websocket.send(`{ "task": "JoinGame", "gameSessionId": "${this.lobbyId}", "nickname": "${this.$session.get('username')}" }`);
+                this.$router.push({name: 'lobby', params: {websocket: this.websocket}});
             }
         },
         watch: {
