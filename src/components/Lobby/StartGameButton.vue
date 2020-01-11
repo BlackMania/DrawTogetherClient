@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn width="33.3333333%" tile class="create-lobby-button" color="#1c343d" id="start-button">
+        <v-btn width="33.3333333%" tile class="create-lobby-button" color="#1c343d" id="start-button" v-on:click="startGame">
             Start Game
         </v-btn>
     </div>
@@ -8,7 +8,15 @@
 
 <script>
     export default {
-        name: "StartGameButton"
+        name: "StartGameButton",
+        props: {
+            websocket: WebSocket
+        },
+        methods: {
+            startGame: function () {
+                this.websocket.send('{"task": "StartGame" }');
+            }
+        }
     }
 </script>
 

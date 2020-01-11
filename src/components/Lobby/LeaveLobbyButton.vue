@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn width="33.3333333%" tile class="create-lobby-button" color="#1c343d" id="leave-button">
+        <v-btn width="33.3333333%" tile class="create-lobby-button" color="#1c343d" id="leave-button" v-on:click="leaveLobby">
             Leave Game
         </v-btn>
     </div>
@@ -8,7 +8,16 @@
 
 <script>
     export default {
-        name: "LeaveLobbyButton"
+        name: "LeaveLobbyButton",
+        props: {
+            websocket: WebSocket,
+        },
+        methods: {
+            leaveLobby: function () {
+                this.websocket.send(`{ "task": "LeaveGame" }`);
+                this.$router.push({name: "lobbylist"});
+            }
+        },
     }
 </script>
 

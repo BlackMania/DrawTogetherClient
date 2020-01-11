@@ -1,13 +1,16 @@
 <template>
-    <v-col :cols="colSize" class="container">
+    <v-col :cols="colSize" :class="checkGameStarted">
         <div class="image">
 
         </div>
         <div class="text">
             {{userName}}
         </div>
-        <div v-if="userName === this.$session.get('username')" class="room-master">
+        <div v-if="checkRoomMaster" class="room-master">
             Roommaster
+        </div>
+        <div v-if="checkGameStartedBool" class="points">
+            {{ points }}
         </div>
     </v-col>
 </template>
@@ -17,10 +20,26 @@
         name: "Player",
         props: {
             userName: String,
+            points: Number
         },
         data() {
             return {
-                colSize: 4
+                colSize: 4,
+            }
+        },
+        computed: {
+            checkRoomMaster: function () {
+                return this.$parent.roomMaster === this.userName;
+            },
+            checkGameStarted: function () {
+                if(this.$parent.started)
+                {
+                    return "containerStarted";
+                }
+                else return "container";
+            },
+            checkGameStartedBool: function () {
+                return this.$parent.started;
             }
         }
     }
@@ -38,6 +57,18 @@
         border: 2px solid #374e52;
     }
 
+    .containerStarted {
+        max-width: 16.66666666666667%;
+        background-color: rgba(55, 78, 82, 0.8);
+        position: relative;
+        /* 8:5 Aspect Ratio */
+        padding-top: 16.66666666666667%;
+        max-height: 20px;
+        border-radius: 100px;
+        margin: 1%;
+        border: 2px solid #374e52;
+    }
+
     .text {
         position: absolute;
         left: 0;
@@ -50,14 +81,11 @@
 
     .image {
         position: absolute;
-        margin: auto;
+        height: auto;
         top: 10%;
         left: 15%;
         right: 15%;
         bottom: 10%;
-        text-align: center;
-        font-size: 20px;
-        color: white;
         background-image: url("../../assets/user_male2-512.png");
         background-size: contain;
     }
@@ -70,5 +98,15 @@
         text-align: center;
         color: white;
         font-size: 15px;
+    }
+
+    .points {
+        position: relative;
+        text-align: center;
+        color: white;
+        margin-top: 10%;
+        background-color: rgba(55, 78, 82, 0.8);
+        border-radius: 100px;
+        border: 2px solid #374e52;
     }
 </style>

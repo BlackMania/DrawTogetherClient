@@ -11,8 +11,9 @@
                                v-bind:player-count="lobby.playerCount"
                 />
             </div>
-            <v-col cols="0"/>
-            <v-spacer/>
+            <v-col cols="4" style="padding-left: 0">
+                <RefreshLobbyListButton v-bind:websocket="websocket"/>
+            </v-col>
             <v-col cols="4">
                 <CreateLobbyButton v-bind:websocket="websocket"/>
             </v-col>
@@ -28,10 +29,11 @@
     import LobbyListHeader from "@/components/Lobbylist/LobbyListHeader";
     import CreateLobbyButton from "@/components/Lobbylist/CreateLobbyButton";
     import JoinLobbyButton from "@/components/Lobbylist/JoinLobbyButton";
+    import RefreshLobbyListButton from "@/components/Lobbylist/RefreshLobbyListButton";
 
     export default {
         name: "Lobbies",
-        components: {JoinLobbyButton, CreateLobbyButton, LobbyListHeader, LobbyListItem},
+        components: {RefreshLobbyListButton, JoinLobbyButton, CreateLobbyButton, LobbyListHeader, LobbyListItem},
         data() {
             return {
                 selectedLobby: null,
@@ -55,13 +57,13 @@
                 }
                 switch (json.task) {
                     case "updateGameList":
+                        comp.lobbies = [];
                         var lobbies = json.gameLobbys;
                         for (let i = 0; i < lobbies.length; i++) {
                             comp.lobbies.push(JSON.parse(`{"lobbyId": "${lobbies[i].lobbyId}", "lobbyName": "${lobbies[i].lobbyName}", "playerCount": 2}`));
                         }
                         break;
                     case "joinGame":
-
                         this.send(`{ "task": "JoinGame", "gameSessionId": "${json.gameSessionId}", "nickname": "${comp.$session.get('username')}" }`);
                         comp.$router.push({name: 'lobby', params: {websocket: this}});
                         break;
